@@ -8,12 +8,12 @@ router = fastapi.APIRouter(
     tags=["threatdb"]
 )
 
-@router.get("/check/{domain}")
-async def check_domain(domain: str):
-    is_blocked = await db.is_blocked(domain)
-    return is_blocked
+@router.get("/check")
+async def check_url(url: str):
+    result = await db.is_blocked(url)
+    return result
 
 @router.post("/report")
-async def report_domain(domain: str, url: str, useragent: str):
-    await db.report_url(domain, url, useragent, None, "Extension")
+async def report_url(url: str, useragent: str):
+    await db.report_url(None, url, useragent, None, "Extension")
     return 200

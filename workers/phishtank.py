@@ -25,17 +25,18 @@ async def fetch_phishtank_data():
     for row in csv_reader:
         if row["verified"] == "yes":
             tld = _extract_tld(row["url"])
-            if tld:
+            if row["url"]:
                 batch.append({
                     "domain": tld,
+                    "url": row["url"],
                     "threat_type": "Phishing",
                     "reported_by": "PhishTank"
                 })
             if len(batch) >= BATCH_SIZE:
-                deduped = {item["domain"]: item for item in batch}.values()
+                deduped = {item["url"]: item for item in batch}.values()
                 await db.batch_block_urls(list(deduped))
                 batch.clear()
 
     if batch:
-        deduped = {item["domain"]: item for item in batch}.values()
+        deduped = {item["url"]: item for item in batch}.values()
         await db.batch_block_urls(list(deduped))
