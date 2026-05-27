@@ -8,7 +8,7 @@ router = fastapi.APIRouter(
     tags=["threatdb"]
 )
 
-@router.get("/check")
+@router.post("/check")
 async def check_url(url: str):
     result = await db.is_blocked(url)
     return result
